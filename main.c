@@ -75,64 +75,79 @@ void DisplayQuestionTask(void)
 			LCD_clearScreen();
 			if(ClearState == DONE)
 			{
-				LCD_displayString(Questions[QuestionIndex]);
-				if(displayStringState == DONE)
-				{
-					displayStringState =BUSY;
-					ClearState = BUSY;
-					display_state_counter++;
-					QuestionIndex++;
-					DisplayNextQuestion = NO;
-					DisplayQuestionAnswer = YES;
-				}
-
+				ClearState = BUSY;
+				display_state_counter++;
 			}
 			break;
 		case 2:
-			LCD_clearScreen();
-			if(ClearState == DONE)
+			LCD_displayString(Questions[QuestionIndex]);
+			if(displayStringState == DONE)
 			{
-				LCD_displayString(Questions[QuestionIndex]);
-				if(displayStringState == DONE)
-				{
-					displayStringState = BUSY;
-					ClearState = BUSY;
-					display_state_counter++;
-					QuestionIndex++;
-					DisplayNextQuestion = NO;
-					DisplayQuestionAnswer = YES;
-				}
+				displayStringState =BUSY;
+				ClearState = BUSY;
+				display_state_counter++;
+				QuestionIndex++;
+				DisplayNextQuestion = NO;
+				DisplayQuestionAnswer = YES;
 			}
 			break;
 		case 3:
 			LCD_clearScreen();
 			if(ClearState == DONE)
 			{
-				LCD_displayString(Questions[QuestionIndex]);
-				if(displayStringState == DONE)
-				{
-					displayStringState = BUSY;
-					ClearState = BUSY;
-					display_state_counter++;
-					QuestionIndex++;
-					DisplayNextQuestion = NO;
-					DisplayQuestionAnswer = YES;
-				}
+				ClearState = BUSY;
+				display_state_counter++;
 			}
 			break;
 		case 4:
+			LCD_displayString(Questions[QuestionIndex]);
+			if(displayStringState == DONE)
+			{
+				displayStringState = BUSY;
+				ClearState = BUSY;
+				display_state_counter++;
+				QuestionIndex++;
+				DisplayNextQuestion = NO;
+				DisplayQuestionAnswer = YES;
+			}
+			break;
+		case 5:
 			LCD_clearScreen();
 			if(ClearState == DONE)
 			{
-				LCD_displayString(Questions[QuestionIndex]);
-				if(displayStringState == DONE)
-				{
-					displayStringState = BUSY;
-					ClearState = BUSY;
-					QuestionIndex++;
-					DisplayNextQuestion = NO;
-					DisplayQuestionAnswer = YES;
-				}
+				ClearState = BUSY;
+				display_state_counter++;
+			}
+			break;
+		case 6:
+			LCD_displayString(Questions[QuestionIndex]);
+			if(displayStringState == DONE)
+			{
+				displayStringState = BUSY;
+				ClearState = BUSY;
+				display_state_counter++;
+				QuestionIndex++;
+				DisplayNextQuestion = NO;
+				DisplayQuestionAnswer = YES;
+			}
+			break;
+		case 7:
+			LCD_clearScreen();
+			if(ClearState == DONE)
+			{
+				ClearState = BUSY;
+				display_state_counter++;
+			}
+			break;
+		case 8:
+			LCD_displayString(Questions[QuestionIndex]);
+			if(displayStringState == DONE)
+			{
+				displayStringState = BUSY;
+				ClearState = BUSY;
+				QuestionIndex++;
+				DisplayNextQuestion = NO;
+				DisplayQuestionAnswer = YES;
 			}
 			break;
 		default:
