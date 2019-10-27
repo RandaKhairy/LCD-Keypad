@@ -9,18 +9,23 @@
 #include "LCD.h"
 #include "keypad.h"
 
-extern LCD_status_t displayStringState;
-extern LCD_status_t clearScreenState;
 extern KEYPAD_status_t keypad_status;
+
 
 #define NUM_OF_QUESTIONS 5
 #define NUM_OF_ANSWERS 3
+
 #define NO 0
 #define YES 1
 
+#define Yes_answer 1
+#define No_answer 2
+#define Skip_answer 3
+
+
 static uint8 Questions[NUM_OF_QUESTIONS][20] = {"France?", "UK?", "Germany?", "Italy?", "Netherlands?"};
-static uint8 Answers[NUM_OF_ANSWERS][10] = {"1.YES", "2.NO", "3.Skip"};
-static uint8 Questions_Answers[NUM_OF_QUESTIONS][5] = {"YES", "YES", "NO", "NO", "YES"};
+static uint8 Answers[NUM_OF_ANSWERS][10] = {"YES", "NO", "Skip"};
+static uint8 Questions_Answers[NUM_OF_QUESTIONS] = {Yes_answer, Yes_answer, No_answer, No_answer, Yes_answer};
 
 /* Tasks Flags */
 static uint8 DisplayNextQuestion = YES;
@@ -55,71 +60,86 @@ void DisplayQuestionTask(void)
 	{
 		switch(display_state_counter)
 		{
-		LCD_clearScreen();
-		if(clearScreenState == DONE)
-		{
-			clearScreenState = DISPALY;
-		}
 		case 0:
 			LCD_displayString(Questions[QuestionIndex]);
 			if(displayStringState == DONE)
 			{
-				displayStringState = DISPALY;
+				displayStringState = BUSY;
 				display_state_counter++;
 				QuestionIndex++;
 				DisplayNextQuestion = NO;
 				DisplayQuestionAnswer = YES;
 			}
-		break;
+			break;
 		case 1:
-			LCD_displayString(Questions[QuestionIndex]);
-			if(displayStringState == DONE)
+			LCD_clearScreen();
+			if(ClearState == DONE)
 			{
-				displayStringState = DISPALY;
-				display_state_counter++;
-				QuestionIndex++;
-				DisplayNextQuestion = NO;
-				DisplayQuestionAnswer = YES;
+				LCD_displayString(Questions[QuestionIndex]);
+				if(displayStringState == DONE)
+				{
+					displayStringState =BUSY;
+					ClearState = BUSY;
+					display_state_counter++;
+					QuestionIndex++;
+					DisplayNextQuestion = NO;
+					DisplayQuestionAnswer = YES;
+				}
+
 			}
-		break;
+			break;
 		case 2:
-			LCD_displayString(Questions[QuestionIndex]);
-			if(displayStringState == DONE)
+			LCD_clearScreen();
+			if(ClearState == DONE)
 			{
-				displayStringState = DISPALY;
-				display_state_counter++;
-				QuestionIndex++;
-				DisplayNextQuestion = NO;
-				DisplayQuestionAnswer = YES;
+				LCD_displayString(Questions[QuestionIndex]);
+				if(displayStringState == DONE)
+				{
+					displayStringState = BUSY;
+					ClearState = BUSY;
+					display_state_counter++;
+					QuestionIndex++;
+					DisplayNextQuestion = NO;
+					DisplayQuestionAnswer = YES;
+				}
 			}
-		break;
+			break;
 		case 3:
-			LCD_displayString(Questions[QuestionIndex]);
-			if(displayStringState == DONE)
+			LCD_clearScreen();
+			if(ClearState == DONE)
 			{
-				displayStringState = DISPALY;
-				display_state_counter++;
-				QuestionIndex++;
-				DisplayNextQuestion = NO;
-				DisplayQuestionAnswer = YES;
+				LCD_displayString(Questions[QuestionIndex]);
+				if(displayStringState == DONE)
+				{
+					displayStringState = BUSY;
+					ClearState = BUSY;
+					display_state_counter++;
+					QuestionIndex++;
+					DisplayNextQuestion = NO;
+					DisplayQuestionAnswer = YES;
+				}
 			}
-		break;
+			break;
 		case 4:
-			LCD_displayString(Questions[QuestionIndex]);
-			if(displayStringState == DONE)
+			LCD_clearScreen();
+			if(ClearState == DONE)
 			{
-				displayStringState = DISPALY;
-				QuestionIndex++;
-				DisplayNextQuestion = NO;
-				DisplayQuestionAnswer = YES;
+				LCD_displayString(Questions[QuestionIndex]);
+				if(displayStringState == DONE)
+				{
+					displayStringState = BUSY;
+					ClearState = BUSY;
+					QuestionIndex++;
+					DisplayNextQuestion = NO;
+					DisplayQuestionAnswer = YES;
+				}
 			}
-		break;
+			break;
 		default:
 			display_state_counter = 0;
 			QuestionIndex = 0;
 			DisplayNextQuestion = NO;
 			DisplayQuestionAnswer = NO;
-			DisplayFinalScore = YES;
 		}
 	}
 
@@ -133,29 +153,44 @@ void DisplayAnswer(void)
 		switch( display_answer_counter)
 		{
 		case 0:
-			LCD_displayString(Answers[0]);
-			if(displayStringState == DONE)
+			LCD_goToRowColumn(1,0);
+			if(gotoState == DONE)
 			{
-				displayStringState = DISPALY;
-				display_answer_counter++;
+				LCD_displayString(Answers[0]);
+				if(displayStringState == DONE)
+				{
+					displayStringState = BUSY;
+					gotoState = BUSY;
+					display_answer_counter++;
+				}
 			}
-		break;
+			break;
 		case 1:
-			LCD_displayString(Answers[1]);
-			if(displayStringState == DONE)
+			LCD_goToRowColumn(1,5);
+			if(gotoState == DONE)
 			{
-				displayStringState = DISPALY;
-				display_answer_counter++;
+				LCD_displayString(Answers[1]);
+				if(displayStringState == DONE)
+				{
+					displayStringState = BUSY;
+					gotoState = BUSY;
+					display_answer_counter++;
+				}
 			}
-		break;
+			break;
 		case 2:
-			LCD_displayString(Answers[2]);
-			if(displayStringState == DONE)
+			LCD_goToRowColumn(1,9);
+			if(gotoState == DONE)
 			{
-				displayStringState = DISPALY;
-				display_answer_counter++;
+				LCD_displayString(Answers[2]);
+				if(displayStringState == DONE)
+				{
+					displayStringState = BUSY;
+					gotoState = BUSY;
+					display_answer_counter++;
+				}
 			}
-		break;
+			break;
 		default:
 			display_answer_counter = 0;
 			DisplayQuestionAnswer = NO;
@@ -178,41 +213,57 @@ void GetAnswer(void)
 	}
 }
 
-void CheckAnswer()
+void CheckAnswer(void)
 {
+	static uint8 AnswerCounter = 0;
 	if(CheckUserAnswer == YES)
 	{
+		AnswerCounter++;
+
 		if(answer == Questions_Answers[QuestionIndex-1])
 		{
 			score++;
-			DisplayNextQuestion = YES;
-			CheckUserAnswer = NO;
 		}
+
+		DisplayNextQuestion = YES;
+		CheckUserAnswer = NO;
+
+		if(AnswerCounter == NUM_OF_QUESTIONS)
+		{
+			DisplayFinalScore = YES;
+			AnswerCounter = 0;
+		}
+
 	}
 }
 
 void DisplayScore(void)
 {
-	//inttostring;
-	if(displayStringState == DONE)
+	if(DisplayFinalScore == YES)
 	{
-		displayStringState = DISPALY;
+		LCD_intgerToString(score);
+		if(integerdisplayState == DONE)
+		{
+			integerdisplayState = BUSY;
+		}
+		DisplayFinalScore = NO;
 	}
 }
 
 OS_ConfigType sys_tick_cnfg = {Sys_tick};
+
 int main(void)
 {
 
 	DIO_init();
 	OS_Init (&sys_tick_cnfg);
 
-	Task_create_t Task1 = {0,2, APP_init, NA, NA};
-	Task_create_t Task2 = {0,2, DisplayQuestionTask, NA, NA};
-	Task_create_t Task3 = {0,2, DisplayAnswer, NA, NA};
-	Task_create_t Task4 = {0,30, GetAnswer, NA, NA};
-	Task_create_t Task5 = {0,30, CheckAnswer, NA, NA};
-	Task_create_t Task6 = {0,200, DisplayScore, NA, NA};
+	Task_create_t Task1 = {0,1, APP_init, NA, NA};
+	Task_create_t Task2 = {1,1, DisplayQuestionTask, NA, NA};
+	Task_create_t Task3 = {1,1, DisplayAnswer, NA, NA};
+	Task_create_t Task4 = {2,30, GetAnswer, NA, NA};
+	Task_create_t Task5 = {2,30, CheckAnswer, NA, NA};
+	Task_create_t Task6 = {3,200, DisplayScore, NA, NA};
 
 	OS_Create_Task(&Task1);
 	OS_Create_Task(&Task2);

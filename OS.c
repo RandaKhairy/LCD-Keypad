@@ -8,7 +8,6 @@
 #include "OS.h"
 
 static Task_create_t Tasks_Buffer[Priority_level][Tasks_number];
-
 static uint8 g_PriorityTasksNumber[Priority_level];
 
 
@@ -116,7 +115,6 @@ void OS_Run(void)
 				}
 			}
 		}
-	CPU_Sleep();
 	}
 }
 

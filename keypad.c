@@ -36,6 +36,7 @@ void KeyPad_getPressedKey(void)
 				pressedKey = ((row * N_col) + col + 1);
 				keypad_status = PRESSED;
 				keyPressed_counter = 0;
+				g_key_state = KEY_RELEASED;
 			}
 		}
 	}
