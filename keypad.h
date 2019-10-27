@@ -12,8 +12,6 @@
 #include "std_types.h"
 #include "micro_config.h"
 #include "common_macros.h"
-#include "lcd.h"
-
 
 #define N_col 3
 #define N_row 3
@@ -27,6 +25,9 @@
 #define KEYPAD_PORT_IN  PINC
 #define KEYPAD_PORT_DIR DDRC
 
+extern uint8 pressedKey;
+
+typedef enum {NOT_PRESSED, PRESSED} KEYPAD_status_t;
 
 typedef uint8(*ptrKeypadFunctionCallback)(void);
 
